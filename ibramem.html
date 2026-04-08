@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposta - Novo Site IBRAMEM</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --green: #1a5632;
+    --green-light: #2d7a4f;
+    --green-pale: #e8f5e9;
+    --gold: #c8a45a;
+    --dark: #1a1a2e;
+  }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: var(--dark); color: white;
+    overflow: hidden; height: 100vh; width: 100vw;
+  }
+
+  .deck { position: relative; width: 100vw; height: 100vh; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 50px 80px;
+    opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  .bg-dark { background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%); }
+  .bg-green { background: linear-gradient(135deg, #0d3320 0%, #1a5632 50%, #2d7a4f 100%); }
+  .bg-white { background: #f8faf9; color: #222; }
+
+  h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+  h2 { font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+  p { font-size: 1.1rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
+  .bg-white p { color: #555; }
+  .bg-white h2, .bg-white h3 { color: var(--green); }
+
+  .accent { color: var(--gold); }
+  .small { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+  .bg-white .small { color: #999; }
+
+  .full-width { width: 100%; max-width: 1100px; }
+  .text-center { text-align: center; }
+  .text-left { text-align: left; }
+  .mt-10 { margin-top: 10px; }
+  .mt-20 { margin-top: 20px; }
+  .mt-30 { margin-top: 30px; }
+
+  .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 1100px; text-align: left; }
+  .three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; width: 100%; max-width: 1100px; text-align: left; }
+
+  .card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 24px;
+  }
+  .bg-white .card { background: white; border: 1px solid #e0e0e0; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .card li { margin-bottom: 5px; font-size: 0.9rem; line-height: 1.5; }
+  .bg-white .card li { color: #444; }
+  .card-highlight { background: rgba(200,164,90,0.1); border: 2px solid var(--gold); }
+  .card-green { background: rgba(26,86,50,0.15); border: 2px solid var(--green-light); }
+  .bg-white .card-green { background: var(--green-pale); border: 2px solid var(--green-light); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  th { font-weight: 700; color: var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .bg-white th { color: var(--green); }
+  .bg-white th, .bg-white td { border-bottom: 1px solid #e0e0e0; }
+  .bg-white td { color: #444; }
+  tr:last-child td { border-bottom: none; }
+  .row-total td { font-weight: 700; border-top: 2px solid var(--gold); padding-top: 12px; }
+
+  .price-big { font-size: 3rem; font-weight: 800; color: var(--gold); line-height: 1; }
+  .price-old { font-size: 1.1rem; color: rgba(255,255,255,0.35); text-decoration: line-through; }
+  .bg-white .price-old { color: #bbb; }
+  .price-label { font-size: 0.9rem; color: rgba(255,255,255,0.5); }
+
+  .badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .badge-green { background: var(--green-light); color: white; }
+  .badge-gold { background: var(--gold); color: #1a1a2e; }
+  .badge-red { background: #c0392b; color: white; }
+
+  .divider { width: 60px; height: 4px; background: var(--gold); border-radius: 2px; margin: 12px 0; }
+  .divider-center { margin: 12px auto; }
+
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { padding: 4px 0 4px 26px; position: relative; font-size: 0.95rem; }
+  .check-list li::before { content: "✓"; position: absolute; left: 0; color: var(--gold); font-weight: 700; }
+  .bg-white .check-list li::before { color: var(--green-light); }
+
+  .nav {
+    position: fixed; bottom: 30px; right: 40px; z-index: 100;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .nav button {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.4);
+    color: white; font-size: 1.2rem; cursor: pointer; transition: all 0.2s;
+  }
+  .nav button:hover { background: var(--green); border-color: var(--green); }
+  .nav .counter { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); transition: width 0.4s ease; z-index: 200; }
+
+  @media (max-width: 900px) {
+    .slide { padding: 25px 20px; }
+    h1 { font-size: 2rem; } h2 { font-size: 1.5rem; }
+    .two-cols, .three-cols { grid-template-columns: 1fr; }
+    .price-big { font-size: 2.2rem; }
+  }
+  @media print {
+    .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; page-break-after: always; height: 100vh; }
+    .nav, .progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- ========== SLIDE 1 - CAPA ========== -->
+<div class="slide bg-green active" data-slide="0">
+  <div class="text-center">
+    <p class="small" style="color:rgba(255,255,255,0.5); letter-spacing:3px; text-transform:uppercase; margin-bottom:20px;">Proposta Comercial</p>
+    <h1>Novo Site<br><span class="accent">IBRAMEM</span></h1>
+    <div class="divider divider-center"></div>
+    <p style="max-width:550px; margin:0 auto;">Instituto Brasileiro da Madeira e das Estruturas de Madeira</p>
+    <p class="mt-30 small">Abril 2026</p>
+  </div>
+</div>
+
+<!-- ========== SLIDE 2 - FASE 1 ========== -->
+<div class="slide bg-white" data-slide="1">
+  <div class="full-width text-left">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span class="badge badge-green">O que esta incluso</span>
+      <span class="badge badge-red">30% OFF</span>
+    </div>
+    <h2 class="mt-10">Seu site atual, <span style="color:var(--gold);">totalmente modernizado</span></h2>
+    <div class="divider"></div>
+    <p style="font-size:0.95rem; color:#777;">Todas as paginas e conteudos que voces ja possuem, reconstruidos com visual moderno, bonito no celular e facil de gerenciar.</p>
+
+    <div class="two-cols mt-20">
+      <div class="card card-green">
+        <h3>7 Paginas do site</h3>
+        <ul class="check-list">
+          <li><strong>Pagina inicial</strong> — apresentacao, missao, parceiros, ultimas noticias</li>
+          <li><strong>Sobre Nos</strong> — historia, gestao, diretoria, assembleias</li>
+          <li><strong>Noticias</strong> — publicacoes, boletins, novidades</li>
+          <li><strong>Eventos</strong> — EBRAMEM, premios, agenda</li>
+          <li><strong>Associe-se</strong> — informacoes sobre como se associar</li>
+          <li><strong>Informacoes</strong> — links uteis, sobre madeira sustentavel</li>
+          <li><strong>Contato</strong> — formulario, endereco, telefone</li>
+        </ul>
+      </div>
+      <div class="card card-green">
+        <h3>O que vem junto</h3>
+        <ul class="check-list">
+          <li>Visual <strong>moderno e profissional</strong></li>
+          <li>Funciona perfeitamente no <strong>celular e tablet</strong></li>
+          <li>Tabela historica dos <strong>EBRAMEM</strong> (I ao XVIII)</li>
+          <li>Logos dos <strong>parceiros e apoiadores</strong></li>
+          <li>Botoes para <strong>compartilhar nas redes sociais</strong></li>
+          <li>Painel para voces mesmos <strong>editarem conteudos</strong></li>
+          <li>Site seguro (cadeado verde no navegador)</li>
+          <li>Aparece bem no <strong>Google</strong></li>
+        </ul>
+        <div style="margin-top:18px; text-align:center;">
+          <span class="price-old">R$ 5.000</span>
+          <p style="font-size:2.2rem; font-weight:800; color:var(--green); margin:0;">R$ 3.500</p>
+          <p style="font-size:0.85rem; color:#999;">Entrega em 6 semanas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 3 - FUNCIONALIDADES AVULSAS ========== -->
+<div class="slide bg-dark" data-slide="2">
+  <div class="full-width text-left">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span class="badge badge-gold">Recursos extras</span>
+      <span class="badge badge-red">30% OFF</span>
+    </div>
+    <h2 class="mt-10">Adicione <span class="accent">o que precisar</span>, quando quiser</h2>
+    <div class="divider"></div>
+    <p class="small">Cada recurso pode ser contratado separadamente, a qualquer momento, sem obrigacao.</p>
+
+    <div class="two-cols mt-10">
+      <table>
+        <thead><tr><th>Recurso</th><th style="text-align:right;"><s style="color:rgba(255,255,255,0.25);">De</s></th><th style="text-align:right;">Por</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Area de associados</strong><br><span class="small">Cadastro, login, pagina pessoal de cada membro</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 1.200</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 840</td></tr>
+          <tr><td><strong>Pagamento online</strong><br><span class="small">Receba via PIX e cartao direto pelo site</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 1.000</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 700</td></tr>
+          <tr><td><strong>Inscricao em eventos</strong><br><span class="small">Inscricao pelo site com desconto para associados</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 1.000</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 700</td></tr>
+          <tr><td><strong>Painel de gestao completo</strong><br><span class="small">Gerenciar associados, eventos, publicacoes e pagamentos</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 1.200</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 840</td></tr>
+          <tr><td><strong>Biblioteca de anais</strong><br><span class="small">Catalogo dos anais do EBRAMEM com download</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 600</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 420</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Recurso</th><th style="text-align:right;"><s style="color:rgba(255,255,255,0.25);">De</s></th><th style="text-align:right;">Por</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Comentarios nas noticias</strong><br><span class="small">Leitores podem comentar, voces aprovam</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 500</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 350</td></tr>
+          <tr><td><strong>Galeria de fotos</strong><br><span class="small">Albums organizados por evento</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 600</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 420</td></tr>
+          <tr><td><strong>Certificados automaticos</strong><br><span class="small">Gera certificado de participacao em eventos</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 500</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 350</td></tr>
+          <tr><td><strong>Relatorios financeiros</strong><br><span class="small">Visualize receitas, filtre por periodo, exporte planilha</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 600</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 420</td></tr>
+          <tr><td><strong>Avisos automaticos por email</strong><br><span class="small">Lembrete de renovacao, confirmacao de inscricao</span></td><td style="text-align:right; color:rgba(255,255,255,0.3);"><s>R$ 500</s></td><td style="text-align:right; color:var(--gold); font-weight:700;">R$ 350</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 4 - PACOTES ========== -->
+<div class="slide bg-green" data-slide="3">
+  <div class="full-width text-center">
+    <span class="badge badge-red">30% OFF em todos os pacotes</span>
+    <h2 class="mt-10">Escolha o pacote <span class="accent">ideal</span></h2>
+    <div class="divider divider-center"></div>
+  </div>
+  <div class="three-cols mt-10 full-width">
+
+    <div class="card text-center">
+      <p class="small" style="color:var(--gold); text-transform:uppercase; letter-spacing:2px;">Essencial</p>
+      <h3 style="color:white;">Site Institucional</h3>
+      <span class="price-old">R$ 5.000</span>
+      <div class="price-big">R$ 3.500</div>
+      <p class="price-label">pagamento unico</p>
+      <div style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"></div>
+      <ul class="check-list" style="text-align:left; font-size:0.85rem;">
+        <li>7 paginas completas</li>
+        <li>Noticias com compartilhamento</li>
+        <li>Listagem de eventos</li>
+        <li>Bonito no celular e computador</li>
+        <li>Voces editam os conteudos</li>
+      </ul>
+      <p class="small mt-20">Entrega em 6 semanas</p>
+    </div>
+
+    <div class="card card-highlight text-center">
+      <p class="small" style="color:var(--gold); text-transform:uppercase; letter-spacing:2px;">Recomendado</p>
+      <h3 style="color:white;">Site + Gestao de Associados</h3>
+      <span class="price-old">R$ 8.200</span>
+      <div class="price-big">R$ 5.740</div>
+      <p class="price-label">pagamento unico</p>
+      <div style="border-top:1px solid rgba(200,164,90,0.3); margin:15px 0;"></div>
+      <ul class="check-list" style="text-align:left; font-size:0.85rem;">
+        <li>Tudo do Essencial</li>
+        <li>Associados se cadastram pelo site</li>
+        <li>Pagamento online (PIX + cartao)</li>
+        <li>Inscricao em eventos com desconto</li>
+        <li>Painel completo para gerenciar tudo</li>
+      </ul>
+      <p class="small mt-20">Entrega em 10 semanas</p>
+    </div>
+
+    <div class="card text-center">
+      <p class="small" style="color:var(--gold); text-transform:uppercase; letter-spacing:2px;">Completo</p>
+      <h3 style="color:white;">Plataforma Completa</h3>
+      <span class="price-old">R$ 12.000</span>
+      <div class="price-big">R$ 8.400</div>
+      <p class="price-label">pagamento unico</p>
+      <div style="border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;"></div>
+      <ul class="check-list" style="text-align:left; font-size:0.85rem;">
+        <li>Tudo do Recomendado</li>
+        <li>Biblioteca de anais com download</li>
+        <li>Galeria de fotos + Comentarios</li>
+        <li>Certificados automaticos</li>
+        <li>Relatorios + Avisos por email</li>
+      </ul>
+      <p class="small mt-20">Entrega em 14 semanas</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== SLIDE 5 - HOSPEDAGEM + MANUTENCAO ========== -->
+<div class="slide bg-white" data-slide="4">
+  <div class="full-width text-left">
+    <span class="badge badge-green">Custos mensais</span>
+    <h2 class="mt-10">Hospedagem + <span style="color:var(--gold);">Manutencao</span></h2>
+    <div class="divider"></div>
+
+    <div class="two-cols mt-20">
+      <div>
+        <h3>Onde o site fica hospedado</h3>
+        <p style="font-size:0.9rem; color:#777; margin-bottom:12px;">O site precisa de um servidor para ficar no ar 24 horas. Recomendamos:</p>
+        <div class="three-cols" style="gap:12px; grid-template-columns: 1fr 1fr 1fr;">
+          <div class="card" style="padding:14px; text-align:center;">
+            <p style="font-size:0.7rem; color:var(--green); text-transform:uppercase; font-weight:700;">Economica</p>
+            <p style="font-size:1.4rem; font-weight:800; color:var(--green);">R$ 0</p>
+            <p style="font-size:0.7rem; color:#999;">Gratuita, porem o site pode demorar para abrir apos inatividade</p>
+          </div>
+          <div class="card card-green" style="padding:14px; text-align:center;">
+            <p style="font-size:0.7rem; color:var(--green); text-transform:uppercase; font-weight:700;">Recomendada</p>
+            <p style="font-size:1.4rem; font-weight:800; color:var(--green);">R$ 28<span style="font-size:0.75rem; font-weight:400;">/mes</span></p>
+            <p style="font-size:0.7rem; color:#555;">Servidor rapido, sempre no ar, cobrado em reais</p>
+          </div>
+          <div class="card" style="padding:14px; text-align:center;">
+            <p style="font-size:0.7rem; color:var(--green); text-transform:uppercase; font-weight:700;">Premium</p>
+            <p style="font-size:1.4rem; font-weight:800; color:var(--green);">~R$ 65<span style="font-size:0.75rem; font-weight:400;">/mes</span></p>
+            <p style="font-size:0.7rem; color:#999;">Para quando o site crescer muito</p>
+          </div>
+        </div>
+        <p class="small mt-10">+ Endereco do site (dominio .org.br): ~R$ 40/ano</p>
+      </div>
+
+      <div>
+        <h3>Manutencao do site <span class="badge badge-red" style="font-size:0.6rem;">30% OFF</span></h3>
+        <p style="font-size:0.9rem; color:#777; margin-bottom:12px;">Para manter o site funcionando bem, seguro e atualizado:</p>
+        <div class="card" style="padding:0; overflow:hidden;">
+          <table style="font-size:0.85rem;">
+            <thead><tr><th>Plano</th><th>O que inclui</th><th style="text-align:right;">Valor</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Sob demanda</strong></td>
+                <td>Correcoes e ajustes quando precisar, sem mensalidade</td>
+                <td style="text-align:right;"><s style="color:#ccc;">R$ 60/h</s><br><strong style="color:var(--green);">R$ 42/h</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Mensal</strong></td>
+                <td>Correcoes, seguranca, copias de seguranca, suporte por WhatsApp</td>
+                <td style="text-align:right;"><s style="color:#ccc;">R$ 350</s><br><strong style="color:var(--green);">R$ 245/mes</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Mensal Plus</strong></td>
+                <td>Tudo acima + melhorias continuas, monitoramento, relatorio mensal</td>
+                <td style="text-align:right;"><s style="color:#ccc;">R$ 600</s><br><strong style="color:var(--green);">R$ 420/mes</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 6 - RESUMO + PAGAMENTO ========== -->
+<div class="slide bg-dark" data-slide="5">
+  <div class="full-width text-left">
+    <h2>Resumo + <span class="accent">Formas de pagamento</span></h2>
+    <div class="divider"></div>
+
+    <div class="two-cols mt-20">
+      <div>
+        <h3 style="color:var(--gold);">Investimento total no 1o ano (Pacote Essencial)</h3>
+        <div class="card" style="margin-top:8px;">
+          <table style="font-size:0.95rem;">
+            <tr><td>Criacao do site</td><td style="text-align:right; font-weight:700;">R$ 3.500</td></tr>
+            <tr><td>Hospedagem (12 meses)</td><td style="text-align:right;">R$ 336</td></tr>
+            <tr><td>Endereco do site (dominio)</td><td style="text-align:right;">R$ 40</td></tr>
+            <tr><td>Manutencao mensal (12 meses)</td><td style="text-align:right;">R$ 2.940</td></tr>
+            <tr class="row-total"><td>Total no 1o ano</td><td style="text-align:right; color:var(--gold); font-size:1.3rem;">R$ 6.816</td></tr>
+          </table>
+        </div>
+
+        <h3 style="color:var(--gold); margin-top:25px;">O que voces recebem</h3>
+        <ul class="check-list" style="font-size:0.9rem;">
+          <li>O site e 100% de voces (entregamos tudo)</li>
+          <li>Funciona no celular, tablet e computador</li>
+          <li>Voces editam conteudos sem precisar de programador</li>
+          <li>15 dias de suporte gratis apos a entrega</li>
+          <li>1 hora de treinamento por video</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 style="color:var(--gold);">Como pagar (Pacote Essencial)</h3>
+
+        <div class="card" style="margin-top:8px; margin-bottom:15px;">
+          <table style="font-size:0.9rem;">
+            <tr>
+              <td><strong>A vista (PIX)</strong></td>
+              <td style="text-align:right; color:var(--gold); font-weight:700; font-size:1.1rem;">R$ 3.500</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="card" style="margin-bottom:15px;">
+          <table style="font-size:0.9rem;">
+            <tr>
+              <td><strong>Parcelado por entrega (3x)</strong></td>
+              <td style="text-align:right;"></td>
+            </tr>
+            <tr><td style="padding-left:20px; color:rgba(255,255,255,0.6);">Na aprovacao</td><td style="text-align:right;">R$ 1.050</td></tr>
+            <tr><td style="padding-left:20px; color:rgba(255,255,255,0.6);">Na entrega parcial (semana 4)</td><td style="text-align:right;">R$ 1.050</td></tr>
+            <tr><td style="padding-left:20px; color:rgba(255,255,255,0.6);">Na entrega final</td><td style="text-align:right;">R$ 1.400</td></tr>
+          </table>
+        </div>
+
+        <div class="card">
+          <table style="font-size:0.9rem;">
+            <tr>
+              <td><strong>Parcelado mensal (5x)</strong></td>
+              <td style="text-align:right;">5x de R$ 750</td>
+            </tr>
+            <tr><td colspan="2" class="small" style="border:none; padding-top:4px;">Total: R$ 3.750</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 7 - ENCERRAMENTO ========== -->
+<div class="slide bg-green" data-slide="6">
+  <div class="text-center">
+    <h1>Vamos <span class="accent">comecar</span>?</h1>
+    <div class="divider divider-center"></div>
+    <p style="max-width:520px; margin:0 auto; font-size:1.2rem;">
+      O IBRAMEM merece um site a altura<br>da sua trajetoria de <strong>43 anos</strong><br>promovendo a madeira no Brasil.
+    </p>
+    <div class="mt-30">
+      <p style="color:var(--gold); font-size:1.1rem; font-weight:600;">Proposta valida por 30 dias</p>
+      <p class="small mt-10">Abril 2026</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div class="nav">
+  <span class="counter" id="counter">1 / 7</span>
+  <button onclick="prev()" aria-label="Anterior">&larr;</button>
+  <button onclick="next()" aria-label="Proximo">&rarr;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  let current = 0;
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+  }
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+  let touchX = 0;
+  document.addEventListener('touchstart', e => touchX = e.changedTouches[0].screenX);
+  document.addEventListener('touchend', e => {
+    const diff = touchX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) diff > 0 ? next() : prev();
+  });
+  show(0);
+</script>
+
+</body>
+</html>
